@@ -236,3 +236,31 @@ details p {
   font-weight: bold;
   font-size: 1.1em;
 }
+
+/* Image reload test */
+.image-tests {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.image-tests > div {
+  text-align: center;
+}
+
+.image-tests h4 {
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.image-box {
+  width: 100px;
+  height: 100px;
+  background-image: url("test-image.svg");
+  background-size: cover;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 10px 10px 10px 0;
+}

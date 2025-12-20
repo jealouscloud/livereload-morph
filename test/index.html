@@ -124,6 +124,28 @@
     </div>
 
     <div class="test-section">
+      <h2>Image Reload Test</h2>
+      <div class="image-tests">
+        <div>
+          <h4>&lt;img&gt; element:</h4>
+          <img src="test-image.svg" alt="Test image" width="100" height="100">
+        </div>
+        <div>
+          <h4>CSS background-image:</h4>
+          <div class="image-box"></div>
+        </div>
+        <div>
+          <h4>Inline style background:</h4>
+          <div style="width: 100px; height: 100px; background-image: url('test-image.svg'); background-size: cover; border: 2px solid #ddd; border-radius: 4px; display: inline-block;"></div>
+        </div>
+      </div>
+      <p class="instructions">
+        Edit test/test-image.svg (change the fill color from #3498db to #e74c3c or the text).
+        All three boxes should update without a full page reload!
+      </p>
+    </div>
+
+    <div class="test-section">
       <h2>Details/Summary (Open State)</h2>
       <details id="details1">
         <summary>Click to expand section 1</summary>

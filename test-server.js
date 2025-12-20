@@ -79,7 +79,7 @@ server.listen(PORT, () => {
 // Start LiveReload server
 const lrServer = livereload.createServer({
   port: LIVERELOAD_PORT,
-  exts: ['html', 'css', 'js'],
+  exts: ['html', 'css', 'js', 'svg', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'ico'],
   debug: true
 });
 

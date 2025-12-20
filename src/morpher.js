@@ -22,6 +22,7 @@ export class Morpher {
     // Determine what kind of reload based on options from protocol
     const isCSSFile = path.match(/\.css(?:\.map)?$/i);
     const isHTMLFile = path.match(/\.html?$/i);
+    const isImageFile = path.match(/\.(jpe?g|png|gif|svg|webp|ico)$/i);
 
     // CSS files (including source maps) with liveCSS enabled
     if (isCSSFile && options.liveCSS) {
@@ -31,6 +32,11 @@ export class Morpher {
     // HTML files with morphHTML enabled
     if (isHTMLFile && options.morphHTML) {
       return this.morphHTML(path, options);
+    }
+
+    // Image files with liveImg enabled
+    if (isImageFile && options.liveImg) {
+      return this.reloadImages(path);
     }
 
     // Everything else: full page reload
@@ -247,6 +253,92 @@ export class Morpher {
 
   reloadPage() {
     this.window.location.reload();
+  }
+
+  // Reload images by cache-busting matching src URLs
+  reloadImages(path) {
+    // Reload <img> elements
+    for (const img of Array.from(this.document.images)) {
+      if (this.pathsMatch(path, pathFromUrl(img.src))) {
+        img.src = generateCacheBustUrl(img.src);
+      }
+    }
+
+    // Reload background images in inline styles
+    const bgSelectors = ['background', 'border'];
+    const bgStyleNames = ['backgroundImage', 'borderImage', 'webkitBorderImage', 'MozBorderImage'];
+
+    for (const selector of bgSelectors) {
+      for (const el of Array.from(this.document.querySelectorAll(`[style*=${selector}]`))) {
+        this.reloadStyleImages(el.style, bgStyleNames, path);
+      }
+    }
+
+    // Reload background images in stylesheets
+    for (const sheet of Array.from(this.document.styleSheets)) {
+      this.reloadStylesheetImages(sheet, path);
+    }
+
+    this.console.log(`Image reload: ${path}`);
+  }
+
+  // Reload images referenced in a stylesheet's rules
+  reloadStylesheetImages(styleSheet, path) {
+    let rules;
+    try {
+      rules = (styleSheet || {}).cssRules;
+    } catch (e) {
+      return; // CORS error
+    }
+
+    if (!rules) return;
+
+    const bgStyleNames = ['backgroundImage', 'borderImage', 'webkitBorderImage', 'MozBorderImage'];
+
+    for (const rule of Array.from(rules)) {
+      switch (rule.type) {
+        case CSSRule.IMPORT_RULE:
+          this.reloadStylesheetImages(rule.styleSheet, path);
+          break;
+        case CSSRule.STYLE_RULE:
+          this.reloadStyleImages(rule.style, bgStyleNames, path);
+          break;
+        case CSSRule.MEDIA_RULE:
+          this.reloadStylesheetImages(rule, path);
+          break;
+      }
+    }
+  }
+
+  // Reload url() references in a style object
+  reloadStyleImages(style, styleNames, path) {
+    for (const styleName of styleNames) {
+      const value = style[styleName];
+      if (typeof value === 'string') {
+        const newValue = value.replace(/\burl\s*\(([^)]*)\)/g, (match, src) => {
+          // Strip quotes from src
+          const cleanSrc = src.replace(/^['"]|['"]$/g, '');
+          if (this.pathsMatch(path, pathFromUrl(cleanSrc))) {
+            return `url(${generateCacheBustUrl(cleanSrc)})`;
+          }
+          return match;
+        });
+        if (newValue !== value) {
+          style[styleName] = newValue;
+        }
+      }
+    }
+  }
+
+  // Check if paths match (comparing from right to left)
+  pathsMatch(path1, path2) {
+    const segs1 = path1.replace(/^\//, '').split('/').reverse();
+    const segs2 = path2.replace(/^\//, '').split('/').reverse();
+    const len = Math.min(segs1.length, segs2.length);
+    for (let i = 0; i < len; i++) {
+      if (segs1[i] !== segs2[i]) return false;
+    }
+    return len > 0;
   }
 
   // Get href from link or style element (prefixfree compatibility)

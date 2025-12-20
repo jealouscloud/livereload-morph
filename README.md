@@ -94,7 +94,8 @@ Or use query string parameters:
 3. **Smart Routing**:
    - `.html` files → Morph with idiomorph
    - `.css` / `.css.map` files → Clone-and-replace for `<link>` tags, CSSOM rule replacement for `@import`
-   - Everything else (`.js`, images, etc.) → Full page reload
+   - Images (`.jpg`, `.png`, `.gif`, `.svg`, `.webp`, `.ico`) → Cache-bust `<img>` src and CSS backgrounds
+   - Everything else (`.js`, etc.) → Full page reload
 4. **State Preservation**: idiomorph intelligently merges changes while preserving DOM state
 
 ### CSS Reload Details
