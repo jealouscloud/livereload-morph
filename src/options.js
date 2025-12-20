@@ -18,9 +18,10 @@ export class Options {
     this.morphHTML = true;
     this.verbose = false;
 
-    // WebKit @import workaround delay in milliseconds
-    // Set to 200 (default) for legacy compatibility
-    // Set to 0 to disable workaround for modern browsers
+    // WebKit @import workaround (flag, not delay)
+    // Set to any value > 0 to enable workaround (default: 200)
+    // Set to 0 to disable (will cause flicker on @import reloads)
+    // When enabled, waits for actual load event, not blind delay
     this.importCacheWaitPeriod = 200;
   }
 
