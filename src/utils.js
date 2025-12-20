@@ -88,11 +88,22 @@ export function pickBestMatch(path, objects, pathFunc = s => s) {
   return bestMatch;
 }
 
-// Generate cache-busting URL by appending timestamp
+// Generate cache-busting URL by adding/replacing livereload timestamp
 export function generateCacheBustUrl(url) {
   const { url: cleanUrl, params, hash } = splitUrl(url);
-  const separator = params ? '&' : '?';
-  return `${cleanUrl}${params}${separator}livereload=${Date.now()}${hash}`;
+  const expando = `livereload=${Date.now()}`;
+
+  if (!params) {
+    return `${cleanUrl}?${expando}${hash}`;
+  }
+
+  // Replace existing livereload param or append new one
+  if (params.includes('livereload=')) {
+    const newParams = params.replace(/([?&])livereload=\d+/, `$1${expando}`);
+    return `${cleanUrl}${newParams}${hash}`;
+  }
+
+  return `${cleanUrl}${params}&${expando}${hash}`;
 }
 
 // Wait for stylesheet to load using onload event and polling fallback
