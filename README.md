@@ -91,10 +91,10 @@ Or use query string parameters:
 1. **WebSocket Connection**: Connects to LiveReload server on port 35729
 2. **File Change Detection**: Server sends `reload` command with changed file path
 3. **Smart Routing**:
-   - `.html` files → Morph with idiomorph
    - `.css` / `.css.map` files → Clone-and-replace for `<link>` tags, CSSOM rule replacement for `@import`
    - Images (`.jpg`, `.png`, `.gif`, `.svg`, `.webp`, `.ico`) → Cache-bust `<img>` src and CSS backgrounds
-   - Everything else (`.js`, etc.) → Full page reload
+   - `.js` / `.mjs` files → Full page reload (no safe hot-reload)
+   - Everything else → Morph with idiomorph (re-fetches page HTML)
 4. **State Preservation**: idiomorph intelligently merges changes while preserving DOM state
 
 ### CSS Reload Details

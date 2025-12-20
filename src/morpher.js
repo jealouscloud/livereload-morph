@@ -19,19 +19,14 @@ export class Morpher {
   }
 
   reload(path, options = {}) {
-    // Determine what kind of reload based on options from protocol
+    // Determine what kind of reload based on file extension
     const isCSSFile = path.match(/\.css(?:\.map)?$/i);
-    const isHTMLFile = path.match(/\.html?$/i);
     const isImageFile = path.match(/\.(jpe?g|png|gif|svg|webp|ico)$/i);
+    const isJSFile = path.match(/\.m?js$/i);
 
     // CSS files (including source maps) with liveCSS enabled
     if (isCSSFile && options.liveCSS) {
       return this.reloadStylesheet(path, options);
-    }
-
-    // HTML files with morphHTML enabled
-    if (isHTMLFile && options.morphHTML) {
-      return this.morphHTML(path, options);
     }
 
     // Image files with liveImg enabled
@@ -39,7 +34,19 @@ export class Morpher {
       return this.reloadImages(path);
     }
 
-    // Everything else: full page reload
+    // JavaScript files: full page reload (no safe way to hot-reload)
+    if (isJSFile) {
+      return this.reloadPage();
+    }
+
+    // Everything else (HTML, server-side files, templates, etc.): morph HTML
+    // This handles both direct .html changes and server-side code changes
+    // that affect the rendered HTML output
+    if (options.morphHTML) {
+      return this.morphHTML(path, options);
+    }
+
+    // Fallback if morphHTML is disabled
     this.reloadPage();
   }
 
