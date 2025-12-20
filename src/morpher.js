@@ -295,7 +295,18 @@ export class Morpher {
   async reattachImportedRule({ rule, index, link }) {
     const parent = rule.parentStyleSheet;
     const href = generateCacheBustUrl(rule.href);
-    const media = rule.media.length ? [].join.call(rule.media, ', ') : '';
+ 
+    // Try to get media query - may fail due to CORS
+    let media = '';
+    try {
+      media = rule.media.length ? [].join.call(rule.media, ', ') : '';
+    } catch (e) {
+      // SecurityError is thrown when accessing cross-origin stylesheet properties
+      if (e.name !== 'SecurityError') {
+        this.console.error(`Unexpected error accessing @import media: ${e.name}: ${e.message}`);
+      }
+    }
+
     const newRule = `@import url("${href}") ${media};`;
 
     // Mark this rule with new href to detect concurrent reload attempts
