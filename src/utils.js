@@ -88,11 +88,6 @@ export function pickBestMatch(path, objects, pathFunc = s => s) {
   return bestMatch;
 }
 
-// Test if two paths match (have any segments in common)
-export function pathsMatch(left, right) {
-  return numberOfMatchingSegments(left, right) > 0;
-}
-
 // Generate cache-busting URL by appending timestamp
 export function generateCacheBustUrl(url) {
   const { url: cleanUrl, params, hash } = splitUrl(url);

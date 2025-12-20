@@ -112,11 +112,22 @@ export class Morpher {
 
   async reloadStylesheet(path, options = {}) {
     try {
+      // CSS reload uses the clone-and-replace strategy:
+      // 1. Find the matching <link> element
+      // 2. Clone it with a cache-busted URL (adds ?livereload=timestamp)
+      // 3. Insert clone next to original
+      // 4. Wait for new stylesheet to load
+      // 5. Remove the original
+      //
+      // This prevents flash of unstyled content (FOUC) because both stylesheets
+      // are active during the transition, then we cleanly swap to the new one.
+
       // Find all stylesheet link elements
       const links = Array.from(this.document.getElementsByTagName('link'))
         .filter(link => link.rel && link.rel.match(/^stylesheet$/i));
 
-      // Find best matching stylesheet
+      // Find best matching stylesheet by comparing path segments from the end
+      // e.g., "styles.css" matches "/test/styles.css" and "/dist/styles.css"
       const match = pickBestMatch(path, links, link => pathFromUrl(link.href));
 
       if (!match) {
@@ -126,11 +137,12 @@ export class Morpher {
 
       const link = match.object;
 
-      // Clone the link element
+      // Clone the link element with cache-busted URL to force browser refetch
       const clone = link.cloneNode(false);
-      clone.href = generateCacheBustUrl(link.href);
+      const newHref = generateCacheBustUrl(link.href);
+      clone.href = newHref;
 
-      // Insert clone after original
+      // Insert clone after original (both active during load)
       const parent = link.parentNode;
       if (parent.lastChild === link) {
         parent.appendChild(clone);
@@ -138,16 +150,17 @@ export class Morpher {
         parent.insertBefore(clone, link.nextSibling);
       }
 
-      // Wait for new stylesheet to load
+      // Wait for new stylesheet to fully load before removing old one
       await waitForStylesheetLoad(clone);
 
-      // Remove old stylesheet
+      // Remove old stylesheet - clean swap complete, no FOUC
       if (link.parentNode) {
         link.parentNode.removeChild(link);
       }
 
     } catch (error) {
       this.console.error(`Stylesheet reload failed: ${error.message}`);
+      this.console.error('Stack:', error.stack);
     }
   }
 
