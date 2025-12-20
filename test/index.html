@@ -29,6 +29,17 @@
     </div>
 
     <div class="test-section">
+      <h2>@import Reload Test (WITH WebKit Workaround)</h2>
+      <div class="imported-box">
+        This box uses styles from @import url("imported.css")
+      </div>
+      <p class="instructions">
+        Try changing the background color in test/imported.css.
+        With importCacheWaitPeriod=200, it should reload WITHOUT flickering (takes ~400ms longer).
+      </p>
+    </div>
+
+    <div class="test-section">
       <h2>Input State Preservation</h2>
       <input type="text" id="test-input" placeholder="Type something here...">
       <p class="instructions">
@@ -141,7 +152,7 @@
       port: 35729,
       verbose: true,
       morphHTML: true,
-      morphCSS: true
+      importCacheWaitPeriod: 200  // Enable WebKit workaround (reduces flicker)
     };
   </script>
   <script type="module" src="../dist/index.js"></script>

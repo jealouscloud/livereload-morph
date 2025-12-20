@@ -1,0 +1,13 @@
+/* Imported stylesheet */
+
+.imported-box {
+  background: #3498db;
+  color: black;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Try changing this color to test @import reload! */
