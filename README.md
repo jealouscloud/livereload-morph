@@ -59,8 +59,7 @@ Add to your HTML page:
     host: 'localhost',
     port: 35729,
     verbose: true,      // Enable console logging
-    morphHTML: true,    // Enable HTML morphing (default: true)
-    morphCSS: true      // Enable CSS live reload (default: true)
+    morphHTML: true     // Enable HTML morphing (default: true)
   };
 </script>
 <script type="module" src="http://localhost:35729/live-morph.js"></script>
