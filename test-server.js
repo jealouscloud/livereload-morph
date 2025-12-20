@@ -35,13 +35,16 @@ const mimeTypes = {
 const server = createServer((req, res) => {
   console.log(`${req.method} ${req.url}`);
 
-  let filePath = join(__dirname, req.url === '/' ? '/test/index.html' : req.url);
+  // Strip query string (for cache-busting URLs like styles.css?livereload=123)
+  const urlPath = req.url.split('?')[0];
+
+  let filePath = join(__dirname, urlPath === '/' ? '/test/index.html' : urlPath);
 
   // Handle /test/ prefix
-  if (req.url.startsWith('/test/')) {
-    filePath = join(__dirname, req.url);
-  } else if (req.url.startsWith('/dist/')) {
-    filePath = join(__dirname, req.url);
+  if (urlPath.startsWith('/test/')) {
+    filePath = join(__dirname, urlPath);
+  } else if (urlPath.startsWith('/dist/')) {
+    filePath = join(__dirname, urlPath);
   }
 
   if (!existsSync(filePath)) {
