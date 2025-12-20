@@ -16,7 +16,6 @@ export class Options {
 
     // New options for live-morph
     this.morphHTML = true;
-    this.morphCSS = true;
     this.verbose = false;
   }
 

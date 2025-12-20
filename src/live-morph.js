@@ -28,7 +28,6 @@ export class LiveMorph {
       host: this.options.host,
       port: this.options.port,
       morphHTML: this.options.morphHTML,
-      morphCSS: this.options.morphCSS,
       verbose: this.options.verbose
     }));
 
@@ -36,7 +35,7 @@ export class LiveMorph {
     this.console = this._setupConsole();
 
     // Create morpher for handling reloads
-    this.morpher = new Morpher(this.window, this.console, Timer);
+    this.morpher = new Morpher(this.window, this.console);
 
     // Create connector for WebSocket communication
     this.connector = new Connector(this.options, this.WebSocket, Timer, {
@@ -134,8 +133,7 @@ export class LiveMorph {
     const options = {
       liveCSS: message.liveCSS != null ? message.liveCSS : true,
       liveImg: message.liveImg != null ? message.liveImg : true,
-      morphHTML: this.options.morphHTML,
-      morphCSS: this.options.morphCSS
+      morphHTML: this.options.morphHTML
     };
 
     this.log(`Reload options: ${JSON.stringify(options)}`);

@@ -7,19 +7,18 @@ import {
 } from './utils.js';
 
 export class Morpher {
-  constructor(window, console, Timer) {
+  constructor(window, console) {
     this.window = window;
     this.console = console;
-    this.Timer = Timer;
     this.document = window.document;
   }
 
   reload(path, options = {}) {
     // Determine what kind of reload based on options from protocol
-    const isCSSFile = path.match(/\.css$/i);
+    const isCSSFile = path.match(/\.css(?:\.map)?$/i);
     const isHTMLFile = path.match(/\.html?$/i);
 
-    // CSS files with liveCSS enabled
+    // CSS files (including source maps) with liveCSS enabled
     if (isCSSFile && options.liveCSS) {
       return this.reloadStylesheet(path, options);
     }
@@ -122,9 +121,9 @@ export class Morpher {
       // This prevents flash of unstyled content (FOUC) because both stylesheets
       // are active during the transition, then we cleanly swap to the new one.
 
-      // Find all stylesheet link elements
+      // Find all stylesheet link elements (exclude those pending removal)
       const links = Array.from(this.document.getElementsByTagName('link'))
-        .filter(link => link.rel && link.rel.match(/^stylesheet$/i));
+        .filter(link => link.rel && link.rel.match(/^stylesheet$/i) && !link.__LiveReload_pendingRemoval);
 
       // Find best matching stylesheet by comparing path segments from the end
       // e.g., "styles.css" matches "/test/styles.css" and "/dist/styles.css"
@@ -136,6 +135,9 @@ export class Morpher {
       }
 
       const link = match.object;
+
+      // Mark link as pending removal to prevent race conditions on rapid reloads
+      link.__LiveReload_pendingRemoval = true;
 
       // Clone the link element with cache-busted URL to force browser refetch
       const clone = link.cloneNode(false);
