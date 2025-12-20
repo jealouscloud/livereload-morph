@@ -5,8 +5,8 @@
   "module": "index.js",
   "type": "module",
   "scripts": {
-    "build": "bun build src/index.js --outdir dist --target browser --format esm",
-    "build:watch": "bun build src/index.js --outdir dist --target browser --format esm --watch",
+    "build": "bun build src/index.js --outfile dist/live-morph.js --target browser --format esm",
+    "build:watch": "bun build src/index.js --outfile dist/live-morph.js --target browser --format esm --watch",
     "test": "bun run build && node test-server.js",
     "dev": "bun run build:watch & node test-server.js"
   },
