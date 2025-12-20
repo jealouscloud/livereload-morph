@@ -1,0 +1,11 @@
+{
+  "name": "live-morph",
+  "module": "index.js",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "type": "module",
+  "dependencies": {
+    "idiomorph": "^0.7.4"
+  }
+}
