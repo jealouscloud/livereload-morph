@@ -81,8 +81,8 @@ Or use query string parameters:
 | `path` | string | 'livereload' | WebSocket path |
 | `https` | boolean | false | Use secure WebSocket (wss://) |
 | `morphHTML` | boolean | true | Enable HTML morphing |
-| `morphCSS` | boolean | true | Enable CSS live reload |
 | `verbose` | boolean | false | Enable console logging |
+| `importCacheWaitPeriod` | number | 200 | Enable legacy WebKit @import workaround. Set to any value > 0 to enable, 0 to disable |
 | `mindelay` | number | 1000 | Min reconnection delay (ms) |
 | `maxdelay` | number | 60000 | Max reconnection delay (ms) |
 | `handshake_timeout` | number | 5000 | Handshake timeout (ms) |
@@ -93,9 +93,20 @@ Or use query string parameters:
 2. **File Change Detection**: Server sends `reload` command with changed file path
 3. **Smart Routing**:
    - `.html` files → Morph with idiomorph
-   - `.css` files → Clone-and-replace stylesheet
+   - `.css` / `.css.map` files → Clone-and-replace for `<link>` tags, CSSOM rule replacement for `@import`
    - `.js` files → Full page reload (can't hot-swap)
 4. **State Preservation**: idiomorph intelligently merges changes while preserving DOM state
+
+### CSS Reload Details
+
+Live-morph supports both `<link>` tags and `@import` rules:
+
+- **`<link>` tags**: Clone with cache-busted URL, wait for load, remove original (prevents FOUC)
+- **`@import` rules**: Replace rule in CSSOM with cache-busted URL
+  - By default uses legacy WebKit workaround (pre-cache with temp `<link>` tag to trigger browser fetch)
+  - Prevents flicker when updating `@import` rules (still needed in modern browsers!)
+  - Set `importCacheWaitPeriod: 0` to disable workaround (will cause brief flicker)
+- **Cross-origin CSS**: CORS-protected stylesheets are handled gracefully (can't inspect `@import` rules)
 
 ## State Preservation Requirements
 
