@@ -70,7 +70,8 @@ h3 {
 /* Try changing this color to test CSS reload! */
 /* For example: background: #e74c3c; or background: #2ecc71; */
 
-input[type="text"] {
+input[type="text"],
+input[type="email"] {
   width: 100%;
   padding: 12px;
   border: 2px solid #ddd;
@@ -79,9 +80,145 @@ input[type="text"] {
   margin: 10px 0;
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="email"]:focus {
   outline: none;
   border-color: #3498db;
+}
+
+/* Tabs */
+.tabs {
+  position: relative;
+}
+
+.tabs input[type="radio"] {
+  display: none;
+}
+
+.tabs label {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-right: 5px;
+  background: #ecf0f1;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.tabs label:hover {
+  background: #bdc3c7;
+}
+
+.tabs input[type="radio"]:checked + label {
+  background: #3498db;
+  color: white;
+}
+
+.tabs .tab-content {
+  display: none;
+  padding: 20px;
+  background: white;
+  border: 2px solid #3498db;
+  border-radius: 0 4px 4px 4px;
+  margin-top: -2px;
+}
+
+.tabs #tab1:checked ~ #content1,
+.tabs #tab2:checked ~ #content2,
+.tabs #tab3:checked ~ #content3 {
+  display: block;
+}
+
+/* Multi-step form */
+.multi-step-form input[type="radio"] {
+  display: none;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.step-label {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  background: #ecf0f1;
+  margin: 0 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.multi-step-form #step1:checked ~ .step-indicator .step-label:nth-child(1),
+.multi-step-form #step2:checked ~ .step-indicator .step-label:nth-child(2),
+.multi-step-form #step3:checked ~ .step-indicator .step-label:nth-child(3) {
+  background: #3498db;
+  color: white;
+}
+
+.step-content {
+  display: none;
+  padding: 20px;
+  background: white;
+  border: 2px solid #3498db;
+  border-radius: 4px;
+}
+
+.multi-step-form #step1:checked ~ #step1-content,
+.multi-step-form #step2:checked ~ #step2-content,
+.multi-step-form #step3:checked ~ #step3-content {
+  display: block;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px 5px 0 0;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background: #2980b9;
+}
+
+.buttons {
+  margin-top: 15px;
+}
+
+/* Details/Summary */
+details {
+  margin: 10px 0;
+  padding: 10px;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 5px;
+  user-select: none;
+}
+
+summary:hover {
+  color: #3498db;
+}
+
+details[open] {
+  border-color: #3498db;
+}
+
+details p {
+  margin-top: 10px;
+  padding-left: 10px;
 }
 
 .status {
