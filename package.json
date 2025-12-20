@@ -1,10 +1,20 @@
 {
   "name": "live-morph",
+  "version": "0.1.0",
+  "description": "A livereload-js replacement using idiomorph for intelligent DOM morphing",
   "module": "index.js",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
   "type": "module",
+  "scripts": {
+    "build": "bun build src/index.js --outdir dist --target browser --format esm",
+    "build:watch": "bun build src/index.js --outdir dist --target browser --format esm --watch",
+    "test": "bun run build && node test-server.js",
+    "dev": "bun run build:watch & node test-server.js"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "http-server": "^14.1.1",
+    "livereload": "^0.10.3"
+  },
   "dependencies": {
     "idiomorph": "^0.7.4"
   }

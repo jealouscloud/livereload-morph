@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiveMorph Test Page</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>LiveMorph Test Page</h1>
+
+    <div class="test-section">
+      <h2>HTML Morphing Test</h2>
+      <p id="content">This is the original content.</p>
+      <p class="instructions">
+        Try editing this text in your editor. The page should update without a full reload!
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>CSS Reload Test</h2>
+      <div class="color-box">
+        This box should change color when you edit styles.css
+      </div>
+      <p class="instructions">
+        Try changing the background color in styles.css. It should update without a flash!
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>Input State Preservation</h2>
+      <input type="text" placeholder="Type something here...">
+      <p class="instructions">
+        Try in the input, then change the HTML. Your input should stay intact!
+      </p>
+    </div>
+
+    <div class="status">
+      <h3>Connection Status</h3>
+      <p id="status">Checking connection...</p>
+    </div>
+  </div>
+
+  <!-- LiveMorph Script with verbose logging -->
+  <script type="module">
+    // Set options before loading
+    window.LiveMorphOptions = {
+      host: 'localhost',
+      port: 35729,
+      verbose: true,
+      morphHTML: true,
+      morphCSS: true
+    };
+  </script>
+  <script type="module" src="../dist/index.js"></script>
+
+  <script type="module">
+    // Monitor connection events
+    document.addEventListener('LiveMorphConnect', () => {
+      document.getElementById('status').textContent = '✅ Connected to LiveReload server';
+      document.getElementById('status').style.color = 'green';
+    });
+
+    document.addEventListener('LiveMorphDisconnect', () => {
+      document.getElementById('status').textContent = '❌ Disconnected from LiveReload server';
+      document.getElementById('status').style.color = 'red';
+    });
+  </script>
+</body>
+</html>
