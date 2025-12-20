@@ -42,50 +42,8 @@ export class Options {
 }
 
 Options.extract = function(document) {
-  // First, check for script tag with live-morph.js
-  for (const element of Array.from(document.getElementsByTagName('script'))) {
-    const src = element.src;
-    const srcAttr = element.getAttribute('src');
-
-    if (!src || !srcAttr) {
-      continue;
-    }
-
-    const lrUrlRegexp = /^([^:]+:\/\/([^/:]+|\[[0-9a-f:]+\])(?::(\d+))?\/|\/\/|\/)?([^/].*\/)?z?(live-morph|livereload)\.js(?:\?(.*))?$/;
-    const lrUrlRegexpAttr = /^(?:(?:([^:/]+)?:?)\/{0,2})([^:]+|\[[0-9a-f:]+\])(?::(\d+))?/;
-
-    const m = src.match(lrUrlRegexp);
-    const mm = srcAttr.match(lrUrlRegexpAttr);
-
-    if (m && mm) {
-      const [, , host, port, , , params] = m;
-      const [, , , portFromAttr] = mm;
-      const options = new Options();
-
-      options.https = element.src.indexOf('https') === 0;
-      options.host = host;
-
-      // Use port from script tag as default
-      const ourPort = parseInt(port || portFromAttr, 10) || '';
-      options.port = ourPort || options.port;
-
-      // Parse query string parameters
-      if (params) {
-        for (const pair of params.split('&')) {
-          const keyAndValue = pair.split('=');
-          if (keyAndValue.length > 1) {
-            options.set(keyAndValue[0].replace(/-/g, '_'), keyAndValue.slice(1).join('='));
-          }
-        }
-      }
-
-      options.port = options.port || ourPort;
-
-      return options;
-    }
-  }
-
-  // Fall back to window.LiveMorphOptions
+  // Primary method: Check for window.LiveMorphOptions first
+  // This is the recommended way to configure live-morph
   const win = document.defaultView || window;
   if (win && win.LiveMorphOptions) {
     const options = new Options();
@@ -93,6 +51,26 @@ Options.extract = function(document) {
       options.set(key, value);
     }
     return options;
+  }
+
+  // Fallback: Look for script tag with data-live-morph-host attribute
+  // Example: <script src="live-morph.js" data-live-morph-host="localhost"></script>
+  const scripts = Array.from(document.getElementsByTagName('script'));
+  for (const script of scripts) {
+    const host = script.getAttribute('data-live-morph-host');
+    if (host) {
+      const options = new Options();
+      options.host = host;
+
+      // Optional attributes
+      const port = script.getAttribute('data-live-morph-port');
+      if (port) options.port = parseInt(port, 10);
+
+      const verbose = script.getAttribute('data-live-morph-verbose');
+      if (verbose !== null) options.verbose = verbose === 'true';
+
+      return options;
+    }
   }
 
   return null;

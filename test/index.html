@@ -30,9 +30,100 @@
 
     <div class="test-section">
       <h2>Input State Preservation</h2>
-      <input type="text" placeholder="Type something here...">
+      <input type="text" id="test-input" placeholder="Type something here...">
       <p class="instructions">
-        Try in the input, then change the HTML. Your input should stay intact!
+        Type in the input, then change the HTML. Your input should stay intact!
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>Tabs (Checked State Preservation)</h2>
+      <div class="tabs">
+        <input type="radio" name="tabs" id="tab1" checked>
+        <label for="tab1">Tab 1</label>
+
+        <input type="radio" name="tabs" id="tab2">
+        <label for="tab2">Tab 2</label>
+
+        <input type="radio" name="tabs" id="tab3">
+        <label for="tab3">Tab 3</label>
+
+        <div class="tab-content" id="content1">
+          <h3>Tab 1 Content</h3>
+          <p>This is the content of tab 1.</p>
+        </div>
+
+        <div class="tab-content" id="content2">
+          <h3>Tab 2 Content</h3>
+          <p>This is the content of tab 2.</p>
+        </div>
+
+        <div class="tab-content" id="content3">
+          <h3>Tab 3 Content</h3>
+          <p>This is the content of tab 3.</p>
+        </div>
+      </div>
+      <p class="instructions">
+        Switch to a different tab, then edit the HTML. The active tab should stay selected!
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>Multi-Step Form</h2>
+      <div class="multi-step-form">
+        <input type="radio" name="step" id="step1" checked>
+        <input type="radio" name="step" id="step2">
+        <input type="radio" name="step" id="step3">
+
+        <div class="step-indicator">
+          <label for="step1" class="step-label">Step 1</label>
+          <label for="step2" class="step-label">Step 2</label>
+          <label for="step3" class="step-label">Step 3</label>
+        </div>
+
+        <div class="step-content" id="step1-content">
+          <h3>Step 1: Personal Info</h3>
+          <input type="text" id="name" placeholder="Your name">
+          <input type="email" id="email" placeholder="Your email">
+          <label for="step2" class="btn">Next</label>
+        </div>
+
+        <div class="step-content" id="step2-content">
+          <h3>Step 2: Address</h3>
+          <input type="text" id="address" placeholder="Street address">
+          <input type="text" id="city" placeholder="City">
+          <div class="buttons">
+            <label for="step1" class="btn">Back</label>
+            <label for="step3" class="btn">Next</label>
+          </div>
+        </div>
+
+        <div class="step-content" id="step3-content">
+          <h3>Step 3: Review</h3>
+          <p>Review your information before submitting.</p>
+          <div class="buttons">
+            <label for="step2" class="btn">Back</label>
+            <button class="btn">Submit</button>
+          </div>
+        </div>
+      </div>
+      <p class="instructions">
+        Navigate through the steps, fill in some fields, then edit the HTML. Your current step and field values should be preserved!
+      </p>
+    </div>
+
+    <div class="test-section">
+      <h2>Details/Summary (Open State)</h2>
+      <details id="details1">
+        <summary>Click to expand section 1</summary>
+        <p>This content should stay expanded if you open it and then morph.</p>
+      </details>
+      <details id="details2">
+        <summary>Click to expand section 2</summary>
+        <p>Try opening this, editing the HTML, and checking if it stays open.</p>
+      </details>
+      <p class="instructions">
+        Open one or both details sections, then edit the HTML. They should stay open!
       </p>
     </div>
 

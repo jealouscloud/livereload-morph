@@ -19,9 +19,18 @@ export class LiveMorph {
     this.options = Options.extract(this.window.document);
 
     if (!this.options) {
-      console.error('[LiveMorph] Disabled because it could not find its own <SCRIPT> tag');
+      console.error('[LiveMorph] Disabled - no configuration found');
+      console.error('[LiveMorph] Set window.LiveMorphOptions = { host: "localhost", port: 35729 }');
       return;
     }
+
+    console.log('[LiveMorph] Options loaded:', JSON.stringify({
+      host: this.options.host,
+      port: this.options.port,
+      morphHTML: this.options.morphHTML,
+      morphCSS: this.options.morphCSS,
+      verbose: this.options.verbose
+    }));
 
     // Set up console logging based on verbose option
     this.console = this._setupConsole();
@@ -122,12 +131,16 @@ export class LiveMorph {
   performReload(message) {
     this.log(`Received reload request for: ${message.path}`);
 
-    return this.morpher.reload(message.path, {
+    const options = {
       liveCSS: message.liveCSS != null ? message.liveCSS : true,
       liveImg: message.liveImg != null ? message.liveImg : true,
       morphHTML: this.options.morphHTML,
       morphCSS: this.options.morphCSS
-    });
+    };
+
+    this.log(`Reload options: ${JSON.stringify(options)}`);
+
+    return this.morpher.reload(message.path, options);
   }
 
   performAlert(message) {

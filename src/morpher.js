@@ -30,15 +30,13 @@ export class Morpher {
     }
 
     // Everything else: full page reload
-    this.console.log(`Reloading page due to change in ${path}`);
     this.reloadPage();
   }
 
   async morphHTML(path, options = {}) {
     try {
-      this.console.log(`Morphing HTML for ${path}`);
 
-      // Fetch fresh content
+      // Fetch current page with fresh content (no cache)
       const response = await fetch(this.window.location.href, {
         cache: 'no-cache',
         headers: { 'X-Live-Morph': 'true' }
@@ -48,29 +46,53 @@ export class Morpher {
         throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
       }
 
-      const newHtml = await response.text();
+      let html = await response.text();
 
-      // Morph the document using idiomorph
-      Idiomorph.morph(this.document.documentElement, newHtml, {
-        morphStyle: 'outerHTML',
+      // Strip DOCTYPE to avoid "Cannot have more than one DocumentType child" error
+      html = html.replace(/<!DOCTYPE[^>]*>/i, '').trim();
+
+      // Morph the full page as shown in idiomorph docs
+      Idiomorph.morph(this.document.documentElement, html, {
         head: {
           style: 'merge',
           shouldPreserve: (elt) => {
-            // Preserve live-morph script tag
+            // Preserve our live-morph script
             if (elt.tagName === 'SCRIPT' && elt.src) {
-              return elt.src.includes('live-morph') || elt.src.includes('livereload');
+              const src = elt.src.toLowerCase();
+              return src.includes('live-morph') ||
+                     src.includes('livereload') ||
+                     src.includes('dist/index.js');
             }
             return false;
           }
         },
         callbacks: {
-          beforeNodeRemoved: (node) => {
-            // Don't remove live-morph script
-            if (node.tagName === 'SCRIPT' && node.src) {
-              if (node.src.includes('live-morph') || node.src.includes('livereload')) {
-                return false;
+          beforeAttributeUpdated: (attributeName, node, mutationType) => {
+            // IMPORTANT: idiomorph reuses DOM nodes (good!) but still syncs attributes (bad for livereload)
+            //
+            // idiomorph was designed for server-rendered apps where the server echoes back current state.
+            // For example: user types "test" → server receives it → server sends back <input value="test">
+            //
+            // But for livereload, we fetch static HTML files that don't have runtime state.
+            // So idiomorph sees <input> (no value) and tries to clear the existing value.
+            //
+            // This callback is the standard pattern used by morphdom, StimulusReflex, and Turbo
+            // to preserve client-side state that isn't in the HTML source.
+
+            // Form elements - preserve value and checked state
+            if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA' || node.tagName === 'SELECT') {
+              if (attributeName === 'value' || attributeName === 'checked') {
+                return false;  // Block update - keep existing state
               }
             }
+
+            // Interactive elements - preserve open/expanded state
+            if (node.tagName === 'DETAILS' && attributeName === 'open') {
+              return false;
+            }
+
+            // Allow all other attribute updates
+            return true;
           }
         }
       });
@@ -80,7 +102,7 @@ export class Morpher {
     } catch (error) {
       this.console.error(`Morph failed: ${error.message}`);
 
-      // Fallback to full reload
+      // Fallback to full reload on any error
       if (options.fallbackToReload !== false) {
         this.console.log('Falling back to full page reload');
         this.reloadPage();
@@ -94,8 +116,6 @@ export class Morpher {
       const links = Array.from(this.document.getElementsByTagName('link'))
         .filter(link => link.rel && link.rel.match(/^stylesheet$/i));
 
-      this.console.log(`Found ${links.length} stylesheets on page`);
-
       // Find best matching stylesheet
       const match = pickBestMatch(path, links, link => pathFromUrl(link.href));
 
@@ -105,7 +125,6 @@ export class Morpher {
       }
 
       const link = match.object;
-      this.console.log(`Reloading stylesheet: ${link.href}`);
 
       // Clone the link element
       const clone = link.cloneNode(false);
@@ -126,8 +145,6 @@ export class Morpher {
       if (link.parentNode) {
         link.parentNode.removeChild(link);
       }
-
-      this.console.log('Stylesheet reloaded successfully');
 
     } catch (error) {
       this.console.error(`Stylesheet reload failed: ${error.message}`);

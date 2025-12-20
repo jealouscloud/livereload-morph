@@ -97,6 +97,52 @@ Or use query string parameters:
    - `.js` files → Full page reload (can't hot-swap)
 4. **State Preservation**: idiomorph intelligently merges changes while preserving DOM state
 
+## State Preservation Requirements
+
+For interactive state to be preserved during morphing, **elements need stable `id` attributes**.
+
+### Why IDs are Required
+
+Idiomorph matches elements between the old and new DOM using IDs. When an element has an `id`, idiomorph knows it's the same element and **morphs it in place** (reuses the DOM node, preserving all state).
+
+Without an `id`, idiomorph falls back to "soft matching" by node type, which may result in the element being **removed and recreated** instead of morphed - losing all runtime state.
+
+### What Needs IDs
+
+Elements with runtime state that should persist across morphs:
+
+```html
+<!-- ✅ Good - will preserve state -->
+<input type="text" id="username" placeholder="Username">
+<textarea id="bio"></textarea>
+<details id="advanced-options"><summary>Options</summary>...</details>
+
+<!-- ❌ Bad - state may be lost -->
+<input type="text" placeholder="Username">  <!-- No ID! -->
+```
+
+### What Doesn't Need IDs
+
+Static content that doesn't have runtime state:
+
+```html
+<!-- These don't need IDs - no state to preserve -->
+<p>This is just text content</p>
+<div class="card">
+  <h2>Card Title</h2>
+  <button onclick="doSomething()">Click me</button>
+</div>
+```
+
+### Best Practices
+
+- **Form inputs**: Always use IDs (`id="email"`, `id="password"`)
+- **Tabs/accordions using `:checked`**: Radio/checkbox inputs need IDs
+- **Details/summary**: Add IDs if you want open/closed state preserved
+- **Static content**: No IDs needed
+
+This is standard for all morphing libraries (morphdom, idiomorph, Turbo). Rails uses the `dom_id` helper to auto-generate IDs like `id="post-123"`.
+
 ## vs livereload-js
 
 | Feature | live-morph | livereload-js |
