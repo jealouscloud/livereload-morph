@@ -62,10 +62,7 @@ export class Morpher {
           shouldPreserve: (elt) => {
             // Preserve our live-morph script
             if (elt.tagName === 'SCRIPT' && elt.src) {
-              const src = elt.src.toLowerCase();
-              return src.includes('live-morph') ||
-                     src.includes('livereload') ||
-                     src.includes('dist/index.js');
+              return elt.src.toLowerCase().includes('live-morph');
             }
             return false;
           }
