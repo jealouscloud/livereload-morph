@@ -17,6 +17,11 @@ export class Options {
     // New options for live-morph
     this.morphHTML = true;
     this.verbose = false;
+
+    // WebKit @import workaround delay in milliseconds
+    // Set to 200 (default) for legacy compatibility
+    // Set to 0 to disable workaround for modern browsers
+    this.importCacheWaitPeriod = 200;
   }
 
   set(name, value) {

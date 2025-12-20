@@ -35,7 +35,12 @@ export class LiveMorph {
     this.console = this._setupConsole();
 
     // Create morpher for handling reloads
-    this.morpher = new Morpher(this.window, this.console);
+    this.morpher = new Morpher(
+      this.window,
+      this.console,
+      Timer,
+      this.options.importCacheWaitPeriod
+    );
 
     // Create connector for WebSocket communication
     this.connector = new Connector(this.options, this.WebSocket, Timer, {
@@ -133,6 +138,7 @@ export class LiveMorph {
     const options = {
       liveCSS: message.liveCSS != null ? message.liveCSS : true,
       liveImg: message.liveImg != null ? message.liveImg : true,
+      reloadMissingCSS: message.reloadMissingCSS != null ? message.reloadMissingCSS : true,
       morphHTML: this.options.morphHTML
     };
 
