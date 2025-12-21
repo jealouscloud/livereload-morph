@@ -124,7 +124,6 @@ export function waitForStylesheetLoad(linkElement, timeout = 15000) {
 
     // Polling fallback for browsers that don't support onload
     const pollInterval = 50;
-    const startTime = Date.now();
 
     const poll = () => {
       if (resolved) return;
@@ -135,19 +134,14 @@ export function waitForStylesheetLoad(linkElement, timeout = 15000) {
         return;
       }
 
-      // Timeout check
-      if (Date.now() - startTime > timeout) {
-        finish();
-        return;
-      }
-
       setTimeout(poll, pollInterval);
     };
 
     // Start polling after a short delay (gives onload a chance to fire)
     setTimeout(poll, pollInterval);
 
-    // Absolute timeout failsafe
+    // Timeout failsafe - guarantees we resolve even if onload never fires
+    // and linkElement.sheet never becomes available
     setTimeout(finish, timeout);
   });
 }
