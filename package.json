@@ -2,10 +2,29 @@
   "name": "livereload-morph",
   "version": "0.1.0",
   "description": "A livereload-js replacement using idiomorph for intelligent DOM morphing",
+  "author": "Noah A.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jealouscloud/livereload-morph.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jealouscloud/livereload-morph/issues"
+  },
+  "homepage": "https://github.com/jealouscloud/livereload-morph#readme",
+  "keywords": [
+    "livereload",
+    "hot-reload",
+    "morphdom",
+    "idiomorph",
+    "dom-diffing",
+    "hmr",
+    "development"
+  ],
   "module": "dist/livereload-morph.js",
   "main": "dist/livereload-morph.js",
   "type": "module",
-  "files": ["dist"],
+  "files": ["dist", "LICENSE"],
   "scripts": {
     "build": "bun build src/index.js --outfile dist/livereload-morph.js --target browser --format esm",
     "build:watch": "bun build src/index.js --outfile dist/livereload-morph.js --target browser --format esm --watch",
