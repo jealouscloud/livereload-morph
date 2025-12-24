@@ -73,9 +73,9 @@ export class Morpher {
         head: {
           style: 'merge',
           shouldPreserve: (elt) => {
-            // Preserve our live-morph script
+            // Preserve our livereload-morph script
             if (elt.tagName === 'SCRIPT' && elt.src) {
-              return elt.src.toLowerCase().includes('live-morph');
+              return elt.src.toLowerCase().includes('livereload-morph');
             }
             return false;
           }

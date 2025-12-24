@@ -1,12 +1,14 @@
 {
-  "name": "live-morph",
+  "name": "livereload-morph",
   "version": "0.1.0",
   "description": "A livereload-js replacement using idiomorph for intelligent DOM morphing",
-  "module": "index.js",
+  "module": "dist/livereload-morph.js",
+  "main": "dist/livereload-morph.js",
   "type": "module",
+  "files": ["dist"],
   "scripts": {
-    "build": "bun build src/index.js --outfile dist/live-morph.js --target browser --format esm",
-    "build:watch": "bun build src/index.js --outfile dist/live-morph.js --target browser --format esm --watch",
+    "build": "bun build src/index.js --outfile dist/livereload-morph.js --target browser --format esm",
+    "build:watch": "bun build src/index.js --outfile dist/livereload-morph.js --target browser --format esm --watch",
     "test": "bun run build && bun test-server.js",
     "test:e2e": "bun tests/e2e.js",
     "test:e2e:install": "bunx playwright install chromium",

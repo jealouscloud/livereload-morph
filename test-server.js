@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Test server for live-morph development
+ * Test server for livereload-morph development
  * Starts an HTTP server and LiveReload server to test morphing functionality
  */
 

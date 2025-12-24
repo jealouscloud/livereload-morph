@@ -14,7 +14,7 @@ export class Options {
     this.maxdelay = 60000;
     this.handshake_timeout = 5000;
 
-    // New options for live-morph
+    // New options for livereload-morph
     this.morphHTML = true;
     this.verbose = false;
 
@@ -47,7 +47,7 @@ export class Options {
 
 Options.extract = function(document) {
   // Primary method: Check for window.LiveMorphOptions first
-  // This is the recommended way to configure live-morph
+  // This is the recommended way to configure livereload-morph
   const win = document.defaultView || window;
   if (win && win.LiveMorphOptions) {
     const options = new Options();
@@ -57,20 +57,20 @@ Options.extract = function(document) {
     return options;
   }
 
-  // Fallback: Look for script tag with data-live-morph-host attribute
-  // Example: <script src="live-morph.js" data-live-morph-host="localhost"></script>
+  // Fallback: Look for script tag with data-livereload-morph-host attribute
+  // Example: <script src="livereload-morph.js" data-livereload-morph-host="localhost"></script>
   const scripts = Array.from(document.getElementsByTagName('script'));
   for (const script of scripts) {
-    const host = script.getAttribute('data-live-morph-host');
+    const host = script.getAttribute('data-livereload-morph-host');
     if (host) {
       const options = new Options();
       options.host = host;
 
       // Optional attributes
-      const port = script.getAttribute('data-live-morph-port');
+      const port = script.getAttribute('data-livereload-morph-port');
       if (port) options.port = parseInt(port, 10);
 
-      const verbose = script.getAttribute('data-live-morph-verbose');
+      const verbose = script.getAttribute('data-livereload-morph-verbose');
       if (verbose !== null) options.verbose = verbose === 'true';
 
       return options;

@@ -1,6 +1,6 @@
 import { Parser, PROTOCOL_6, PROTOCOL_7 } from './protocol.js';
 
-const VERSION = '1.0.0'; // live-morph version
+const VERSION = '1.0.0'; // livereload-morph version
 
 export class Connector {
   constructor(options, WebSocket, Timer, handlers) {

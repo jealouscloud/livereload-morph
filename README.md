@@ -1,6 +1,6 @@
-# live-morph
+# livereload-morph
 
-A livereload-js replacement that uses **idiomorph** for intelligent DOM morphing. Instead of full page reloads, live-morph preserves page state by morphing HTML changes directly into the DOM.
+A livereload-js replacement that uses **idiomorph** for intelligent DOM morphing. Instead of full page reloads, livereload-morph preserves page state by morphing HTML changes directly into the DOM.
 
 ## Features
 
@@ -14,7 +14,7 @@ A livereload-js replacement that uses **idiomorph** for intelligent DOM morphing
 
 - **LiveReload Protocol 7 Compatible**: Works with existing LiveReload servers (guard-livereload, browser-sync, etc.)
 
-- **Minimal & Fast**: ~43 KB bundle (includes idiomorph), vanilla JavaScript, no dependencies
+- **Minimal & Fast**: Small bundle (includes idiomorph), vanilla JavaScript, no dependencies
 
 ## Quick Start
 
@@ -62,13 +62,13 @@ Add to your HTML page:
     morphHTML: true     // Enable HTML morphing (default: true)
   };
 </script>
-<script type="module" src="http://localhost:35729/live-morph.js"></script>
+<script type="module" src="http://localhost:35729/livereload-morph.js"></script>
 ```
 
 Or use query string parameters:
 
 ```html
-<script type="module" src="http://localhost:35729/live-morph.js?host=localhost&verbose=true"></script>
+<script type="module" src="http://localhost:35729/livereload-morph.js?host=localhost&verbose=true"></script>
 ```
 
 ## Configuration Options
@@ -119,14 +119,13 @@ Live-morph supports both `<link>` tags and `@import` rules:
 
 ## vs livereload-js
 
-| Feature | live-morph | livereload-js |
-|---------|------------|---------------|
+| Feature | livereload-morph | livereload-js |
+|---------|------------------|---------------|
 | HTML updates | ✅ Morph (preserves state) | ❌ Full reload |
 | CSS updates | ✅ Clone-replace | ✅ Clone-replace |
 | Input state | ✅ Preserved | ❌ Lost on reload |
 | Scroll position | ✅ Preserved | ❌ Lost on reload |
 | Focus state | ✅ Preserved | ❌ Lost on reload |
-| Bundle size | ~43 KB | ~10 KB |
 
 ## Development
 
