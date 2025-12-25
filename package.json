@@ -1,6 +1,6 @@
 {
   "name": "livereload-morph",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A livereload-js replacement using idiomorph for intelligent DOM morphing",
   "author": "Noah A.",
   "license": "MIT",
