@@ -1,6 +1,6 @@
 {
   "name": "livereload-morph",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A livereload-js replacement using idiomorph for intelligent DOM morphing",
   "author": "Noah A.",
   "license": "MIT",
@@ -22,11 +22,11 @@
     "development"
   ],
   "module": "dist/livereload-morph.js",
-  "main": "dist/livereload-morph.js",
+  "main": "dist/livereload-morph.cjs",
   "type": "module",
   "files": ["dist", "LICENSE"],
   "scripts": {
-    "build": "bun build src/index.js --outfile dist/livereload-morph.js --target browser --format esm",
+    "build": "bun build src/index.js --outfile dist/livereload-morph.js --target browser --format esm && bun build src/index.js --outfile dist/livereload-morph.min.js --target browser --format esm --minify && bun build src/index.js --outfile dist/livereload-morph.cjs --target browser --format cjs",
     "build:watch": "bun build src/index.js --outfile dist/livereload-morph.js --target browser --format esm --watch",
     "test": "bun run build && bun test-server.js",
     "test:e2e": "bun tests/e2e.js",
