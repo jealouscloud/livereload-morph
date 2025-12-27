@@ -57,7 +57,7 @@ Options.extract = function(document) {
     return options;
   }
 
-  // Fallback: Look for script tag with data-livereload-morph-host attribute
+  // Second method: Look for script tag with data-livereload-morph-host attribute
   // Example: <script src="livereload-morph.js" data-livereload-morph-host="localhost"></script>
   const scripts = Array.from(document.getElementsByTagName('script'));
   for (const script of scripts) {
@@ -74,6 +74,29 @@ Options.extract = function(document) {
       if (verbose !== null) options.verbose = verbose === 'true';
 
       return options;
+    }
+  }
+
+  // Third method: Parse query string from the script's src URL
+  // Example: <script src="livereload-morph.js?host=localhost&port=35729"></script>
+  for (const script of scripts) {
+    const src = script.src || '';
+    if (src.includes('livereload-morph')) {
+      const queryIndex = src.indexOf('?');
+      if (queryIndex !== -1) {
+        const queryString = src.slice(queryIndex + 1);
+        const params = new URLSearchParams(queryString);
+        const host = params.get('host');
+        if (host) {
+          const options = new Options();
+          options.host = host;
+
+          for (const [key, value] of params.entries()) {
+            options.set(key, value);
+          }
+          return options;
+        }
+      }
     }
   }
 
