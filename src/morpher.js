@@ -81,7 +81,47 @@ export class Morpher {
           }
         },
         callbacks: {
-          beforeAttributeUpdated: (attributeName, node, mutationType) => {
+          afterNodeMorphed: (oldNode) => {
+            // Handle declarative shadow DOM: if the morphed node now has a shadow DOM template
+            // in its light DOM (from the new HTML), manually update the shadow root.
+            // Declarative shadow DOM only works during initial HTML parsing, not DOM manipulation,
+            // so we need to handle it ourselves.
+            if (options.morphShadowDOM === false) return;
+
+            if (oldNode.children) {
+              for (const child of oldNode.children) {
+                if (child.tagName === 'TEMPLATE' &&
+                    (child.hasAttribute('shadowrootmode') || child.hasAttribute('shadowroot'))) {
+                  // Build attachShadow options from template attributes
+                  const shadowOptions = {
+                    mode: child.getAttribute('shadowrootmode') || child.getAttribute('shadowroot') || 'open'
+                  };
+                  if (child.hasAttribute('shadowrootdelegatesfocus')) {
+                    shadowOptions.delegatesFocus = true;
+                  }
+                  if (child.hasAttribute('shadowrootclonable')) {
+                    shadowOptions.clonable = true;
+                  }
+                  if (child.hasAttribute('shadowrootserializable')) {
+                    shadowOptions.serializable = true;
+                  }
+
+                  // Create shadow root if it doesn't exist, or update existing
+                  let shadow = oldNode.shadowRoot;
+                  if (!shadow) {
+                    shadow = oldNode.attachShadow(shadowOptions);
+                  }
+                  // Clear and clone new content
+                  shadow.innerHTML = '';
+                  shadow.appendChild(child.content.cloneNode(true));
+                  // Remove the template from the light DOM (mimics browser behavior)
+                  child.remove();
+                  break;
+                }
+              }
+            }
+          },
+          beforeAttributeUpdated: (attributeName, node) => {
             // IMPORTANT: idiomorph reuses DOM nodes (good!) but still syncs attributes (bad for livereload)
             //
             // idiomorph was designed for server-rendered apps where the server echoes back current state.

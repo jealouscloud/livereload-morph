@@ -16,6 +16,7 @@ export class Options {
 
     // New options for livereload-morph
     this.morphHTML = true;
+    this.morphShadowDOM = true;  // Set to false to disable automatic shadow DOM updates
     this.verbose = false;
 
     // WebKit @import workaround delay in milliseconds

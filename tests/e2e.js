@@ -185,6 +185,58 @@ async function runTests() {
     }
   }
 
+  log('\n--- Shadow DOM Tests ---');
+
+  // Test: Declarative Shadow DOM content updates
+  {
+    // Wait for page to stabilize after previous tests
+    await page.waitForSelector('#shadow-host', { state: 'attached', timeout: 10000 });
+    await page.waitForTimeout(500); // Let shadow DOM initialize
+
+    // Check initial shadow DOM content
+    const shadowHost = page.locator('#shadow-host');
+
+    // Get text from shadow root
+    const initialText = await shadowHost.evaluate(el => {
+      return el.shadowRoot?.querySelector('#shadow-text')?.textContent;
+    });
+
+    if (initialText !== 'Original shadow DOM content') {
+      fail('Shadow DOM initial content', `Expected "Original shadow DOM content", got "${initialText}"`);
+    } else {
+      pass('Shadow DOM initial content rendered');
+    }
+
+    const restore = modifyFile('index.html',
+      '<p id="shadow-text">Original shadow DOM content</p>',
+      '<p id="shadow-text">UPDATED shadow DOM content</p>'
+    );
+
+    try {
+      // Wait for shadow DOM to update
+      await page.waitForFunction(() => {
+        const host = document.getElementById('shadow-host');
+        const text = host?.shadowRoot?.querySelector('#shadow-text')?.textContent;
+        return text === 'UPDATED shadow DOM content';
+      }, { timeout: 5000 });
+
+      pass('Shadow DOM content updates on morph');
+    } catch (e) {
+      const currentText = await shadowHost.evaluate(el => {
+        return el.shadowRoot?.querySelector('#shadow-text')?.textContent;
+      });
+      fail('Shadow DOM content updates on morph', `Shadow text is "${currentText}": ${e.message}`);
+    } finally {
+      restore();
+      // Wait for restore
+      await page.waitForFunction(() => {
+        const host = document.getElementById('shadow-host');
+        const text = host?.shadowRoot?.querySelector('#shadow-text')?.textContent;
+        return text === 'Original shadow DOM content';
+      }, { timeout: 5000 }).catch(() => {});
+    }
+  }
+
   log('\n--- CSS Reload Tests ---');
 
   // Test: CSS reload changes styles

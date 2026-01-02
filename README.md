@@ -100,6 +100,27 @@ The following is preserved automatically during HTML morphs:
 
 For best results, add IDs to form elements. Without IDs, idiomorph may recreate elements instead of morphing them.
 
+### Declarative Shadow DOM
+
+livereload-morph supports [declarative shadow DOM](https://developer.chrome.com/docs/css-ui/declarative-shadow-dom). When a `<template shadowrootmode="open">` is morphed, the library detects it and updates the shadow root content accordingly.
+
+```html
+<div id="my-component">
+  <template shadowrootmode="open">
+    <style>p { color: blue; }</style>
+    <p>Shadow content that will be live-reloaded</p>
+  </template>
+</div>
+```
+
+All standard declarative shadow DOM attributes are supported:
+- `shadowrootmode` - "open" or "closed"
+- `shadowrootdelegatesfocus` - delegates focus to first focusable element
+- `shadowrootclonable` - allows cloning via `cloneNode()`
+- `shadowrootserializable` - allows serialization via `getHTML()`
+
+Set `morphShadowDOM: false` to skip this processing (the `<template>` will remain in the light DOM after morph, and no shadow root updates will occur).
+
 ## All Options
 
 | Option | Type | Default | Description |
@@ -109,6 +130,7 @@ For best results, add IDs to form elements. Without IDs, idiomorph may recreate 
 | `path` | string | 'livereload' | WebSocket path |
 | `https` | boolean | false | Use secure WebSocket (wss://) |
 | `morphHTML` | boolean | true | Enable HTML morphing |
+| `morphShadowDOM` | boolean | true | Process declarative shadow DOM templates during morph |
 | `verbose` | boolean | false | Enable console logging |
 | `importCacheWaitPeriod` | number | 200 | Legacy WebKit @import workaround delay. Set to 0 to disable |
 | `mindelay` | number | 1000 | Min reconnection delay (ms) |

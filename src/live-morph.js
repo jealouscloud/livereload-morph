@@ -139,7 +139,8 @@ export class LiveMorph {
       liveCSS: message.liveCSS != null ? message.liveCSS : true,
       liveImg: message.liveImg != null ? message.liveImg : true,
       reloadMissingCSS: message.reloadMissingCSS != null ? message.reloadMissingCSS : true,
-      morphHTML: this.options.morphHTML
+      morphHTML: this.options.morphHTML,
+      morphShadowDOM: this.options.morphShadowDOM
     };
 
     this.log(`Reload options: ${JSON.stringify(options)}`);

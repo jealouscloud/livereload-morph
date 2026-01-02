@@ -160,6 +160,28 @@
       </p>
     </div>
 
+    <div class="test-section">
+      <h2>Declarative Shadow DOM Test</h2>
+      <div id="shadow-host">
+        <template shadowrootmode="open">
+          <style>
+            .shadow-content {
+              padding: 10px;
+              background: #e8f4fc;
+              border: 2px solid #3498db;
+              border-radius: 4px;
+            }
+          </style>
+          <div class="shadow-content">
+            <p id="shadow-text">Original shadow DOM content</p>
+          </div>
+        </template>
+      </div>
+      <p class="instructions">
+        Edit the shadow DOM template content above. The shadow root should be recreated with the new content!
+      </p>
+    </div>
+
     <div class="status">
       <h3>Connection Status</h3>
       <p id="status">Checking connection...</p>
